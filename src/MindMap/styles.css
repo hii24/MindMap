@@ -1,0 +1,25 @@
+.mind-map {
+  display: flex;
+}
+.node {
+  display: flex;
+  margin: 12px 0;
+  margin-right: 8px;
+  align-items: center;
+}
+.node__container {
+  /* max-width: 100px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 0px 32px;
+  background: #e0de7d;
+  position: relative;
+}
+.node__container > button {
+  border-radius: 4px;
+  border: 0;
+  position: absolute;
+  right: -8px;
+}
