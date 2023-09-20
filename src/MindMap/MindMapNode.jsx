@@ -11,15 +11,12 @@ const MindMapNode = ({
   parentPosition,
 }) => {
   const nodeRef = useRef(null);
-  const [pageWidth, setPageWidth] = useState(0);
-  const [pageHeight, setPageHeight] = useState(0);
   const [position, setPosition] = useState({
     y: 0,
     x: 0,
     width: 0,
     height: 0,
   });
-  const [columnHeight, setColumnHeight] = useState(0);
   const levelNode = level + 1;
 
   const handleAddChild = () => {
