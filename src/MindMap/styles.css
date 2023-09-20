@@ -16,24 +16,6 @@
   position: relative;
 }
 
-.before_line::before {
-  content: "";
-  height: 1px;
-  width: 16px;
-  background: #000;
-  position: absolute;
-  left: -16px;
-}
-
-.after_line::after {
-  content: "";
-  height: 1px;
-  width: 16px;
-  background: #000;
-  position: absolute;
-  right: -16px;
-  z-index: -2;
-}
 .node__container > button {
   border-radius: 4px;
   border: 0;

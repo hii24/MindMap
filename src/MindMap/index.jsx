@@ -26,16 +26,24 @@ function MindMap() {
   };
 
   return (
-    <div className="mind-map">
-      <MindMapNode
-        name={mindMapData.name}
-        children={mindMapData.children}
-        onAddChild={handleAddChild}
-        level={0}
-        index={0}
-        updateValue={updateValue}
-      />
-    </div>
+    <>
+      <div className="mind-map">
+        <MindMapNode
+          name={mindMapData.name}
+          children={mindMapData.children}
+          onAddChild={handleAddChild}
+          level={0}
+          index={0}
+          updateValue={updateValue}
+          parentPosition={{
+            y: 0,
+            x: 0,
+            width: 0,
+            height: 0,
+          }}
+        />
+      </div>
+    </>
   );
 }
 

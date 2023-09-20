@@ -1,89 +1,80 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react";
 import "./styles.css";
+import MindMapLink from "./MindMapLink";
 
-const MindMapNode = forwardRef(
-  ({ name, onAddChild, children, level, updateValue }, ref) => {
-    const firstElementRef = useRef(null);
-    const lastElementRef = useRef(null);
-    const [position, setPosition] = useState({
-      y: 0,
-      x: 0,
-    });
-    const [columnHeight, setColumnHeight] = useState(0);
-    const levelNode = level + 1;
-    const handleAddChild = () => {
-      onAddChild(name, `${name}-${children.length}`);
-    };
-    const updateHeight = () => {
-      if (firstElementRef.current && lastElementRef.current) {
-        const firstElement = firstElementRef.current.getBoundingClientRect();
-        const lastElement = lastElementRef.current.getBoundingClientRect();
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        setColumnHeight(lastElement.top - firstElement.top);
-        setPosition({
-          x: firstElement.x - 16,
-          y: firstElement.y + scrollTop + firstElement.height / 2,
-        });
-      }
-    };
+const MindMapNode = ({
+  name,
+  onAddChild,
+  children,
+  level,
+  updateValue,
+  parentPosition,
+}) => {
+  const nodeRef = useRef(null);
+  const [position, setPosition] = useState({
+    y: 0,
+    x: 0,
+    width: 0,
+    height: 0,
+  });
+  const levelNode = level + 1;
 
-    useEffect(() => {
-      updateHeight();
-    }, [updateValue]);
+  const handleAddChild = () => {
+    onAddChild(name, `${name}-${children.length}`);
+  };
+  const calculateLinkCoordinates = () => {
+    if (nodeRef.current) {
+      const node = nodeRef.current.getBoundingClientRect();
+      setPosition({
+        y: node.y,
+        x: node.x,
+        width: node.width,
+        height: node.height,
+      });
+      console.log(node, "node");
+    }
+  };
 
-    return (
-      <div className="node">
-        {!!children.length && (
-          <div
-            style={{
-              top: position.y,
-              left: position.x,
-              height: columnHeight,
-              position: "absolute",
-              background: "black",
-              right: -16,
-              width: 1,
-            }}
-          />
-        )}
-        <div
-          ref={ref}
-          className={`node__container ${level && " before_line"} ${
-            children.length && " after_line"
-          }`}
-          style={{ marginLeft: 32 }}
-        >
-          <p>{name}</p>
-          <button onClick={handleAddChild}>+</button>
-        </div>
-        <div
-          style={{
-            flexDirection: "column",
-          }}
-        >
-          {children &&
-            children.map((child, index) => (
-              <MindMapNode
-                key={child.name}
-                name={child.name}
-                onAddChild={onAddChild}
-                children={child.children}
-                level={levelNode}
-                index={index}
-                updateValue={updateValue}
-                ref={
-                  index === 0
-                    ? firstElementRef
-                    : index === children.length - 1
-                    ? lastElementRef
-                    : null
-                }
-              />
-            ))}
-        </div>
+
+  useEffect(() => {
+    calculateLinkCoordinates();
+  }, [updateValue]);
+
+  return (
+    <div className="node">
+      <div ref={nodeRef} className="node__container" style={{ marginLeft: 32 }}>
+        <p onClick={() => console.log(position)}>{name}</p>
+        <button onClick={handleAddChild}>+</button>
       </div>
-    );
-  }
-);
+      <div
+        style={{
+          flexDirection: "column",
+        }}
+      >
+        {children &&
+          children.map((child, index) => (
+            <MindMapNode
+              key={child.name}
+              name={child.name}
+              onAddChild={onAddChild}
+              children={child.children}
+              level={levelNode}
+              index={index}
+              updateValue={updateValue}
+              parentPosition={position}
+            />
+          ))}
+      </div>
+      {!!level && (
+        <MindMapLink
+          startX={position.x}
+          startY={position.y + position.height / 2}
+          endX={parentPosition.x + parentPosition.width}
+          endY={parentPosition.y + parentPosition.height / 2}
+        />
+      )}
+    </div>
+  );
+};
 
 export default MindMapNode;
