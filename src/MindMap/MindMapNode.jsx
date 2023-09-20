@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, forwardRef } from "react";
 import "./styles.css";
 
 const MindMapNode = forwardRef(
-  ({ name, onAddChild, children, level, updateHeightParen }, ref) => {
+  ({ name, onAddChild, children, level, updateValue }, ref) => {
     const firstElementRef = useRef(null);
     const lastElementRef = useRef(null);
     const [position, setPosition] = useState({
@@ -13,25 +13,23 @@ const MindMapNode = forwardRef(
     const levelNode = level + 1;
     const handleAddChild = () => {
       onAddChild(name, `${name}-${children.length}`);
-      updateHeightParen();
     };
     const updateHeight = () => {
-      updateHeightParen();
       if (firstElementRef.current && lastElementRef.current) {
         const firstElement = firstElementRef.current.getBoundingClientRect();
         const lastElement = lastElementRef.current.getBoundingClientRect();
-
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
         setColumnHeight(lastElement.top - firstElement.top);
         setPosition({
           x: firstElement.x - 16,
-          y: firstElement.y + firstElement.height / 2,
+          y: firstElement.y + scrollTop + firstElement.height / 2,
         });
       }
     };
 
     useEffect(() => {
       updateHeight();
-    }, []);
+    }, [updateValue]);
 
     return (
       <div className="node">
@@ -71,8 +69,8 @@ const MindMapNode = forwardRef(
                 onAddChild={onAddChild}
                 children={child.children}
                 level={levelNode}
-                updateHeightParen={updateHeight}
                 index={index}
+                updateValue={updateValue}
                 ref={
                   index === 0
                     ? firstElementRef

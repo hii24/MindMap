@@ -3,6 +3,7 @@ import MindMapNode from "./MindMapNode";
 import "./styles.css";
 
 function MindMap() {
+  const [updateValue, setUpdateValue] = useState(false);
   const [mindMapData, setMindMapData] = useState({
     name: "child 0",
     children: [],
@@ -11,6 +12,7 @@ function MindMap() {
     const updatedData = { ...mindMapData };
     findAndAddChild(updatedData, parentName, childName);
     setMindMapData(updatedData);
+    setUpdateValue(!updateValue);
   };
 
   const findAndAddChild = (node, parentName, childName) => {
@@ -29,9 +31,9 @@ function MindMap() {
         name={mindMapData.name}
         children={mindMapData.children}
         onAddChild={handleAddChild}
-        updateHeightParen={() => {}}
         level={0}
         index={0}
+        updateValue={updateValue}
       />
     </div>
   );
